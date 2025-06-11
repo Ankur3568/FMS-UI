@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facility Management System</title>
+    
+    <style>
+        /* --- CSS STYLES --- */
+
+        /* Basic Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: #f4f7fa;
+            color: #333;
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .sidebar-header h2 {
+            margin: 0 0 0 15px;
+        }
+
+        .logo-placeholder { /* Placeholder for SVG icon */
+            width: 40px;
+            height: 40px;
+            background-color: #3498db;
+            border-radius: 8px;
+        }
+
+        .menu {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .menu a {
+            color: #ecf0f1;
+            text-decoration: none;
+            display: block;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .menu a.active, .menu a:hover {
+            background-color: #34495e;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            background-color: #f4f7fa;
+        }
+
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
+            flex-shrink: 0;
+        }
+        
+        .main-header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-profile span {
+            margin-right: 15px;
+        }
+        
+        .user-avatar {
+             width: 40px;
+             height: 40px;
+             border-radius: 50%;
+             background-color: #ccc;
+        }
+
+        .content {
+            padding: 20px;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        /* Dashboard Widgets */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 1px solid #e0e0e0;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            font-size: 1rem;
+            color: #555;
+            font-weight: 600;
+        }
+
+        .card .metric {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 10px 0 0;
+        }
+
+        /* Work Orders Table */
+        .table-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 1px solid #e0e0e0;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .table-header h2 {
+            margin: 0;
+        }
+
+        .btn-primary {
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: 600;
+        }
+
+        td {
+            font-size: 0.95rem;
+        }
+
+        .status {
+            padding: 4px 12px;
+            border-radius: 15px;
+            color: #fff;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .status-completed { background-color: #2ecc71; }
+        .status-in-progress { background-color: #f39c12; }
+        .status-new { background-color: #e74c3c; }
+        
+        .action-buttons button {
+            background: none;
+            border: 1px solid #ccc;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        
+        .action-buttons button:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-placeholder"></div>
+                <h2>FMS</h2>
+            </div>
+            <ul class="menu">
+                <li><a href="#" id="nav-dashboard" class="nav-link active">Dashboard</a></li>
+                <li><a href="#" id="nav-work-orders" class="nav-link">Work Orders</a></li>
+                </ul>
+        </nav>
+
+        <main class="main-content">
+            <header class="main-header">
+                <h1 id="page-title">Dashboard</h1>
+                <div class="user-profile">
+                    <span>Welcome, Alex!</span>
+                    <div class="user-avatar"></div>
+                </div>
+            </header>
+            <div class="content" id="content-area">
+                </div>
+        </main>
+    </div>
+
+    <script>
+        // --- JAVASCRIPT LOGIC ---
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const contentArea = document.getElementById('content-area');
+            const pageTitle = document.getElementById('page-title');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            // --- HTML TEMPLATES FOR DYNAMIC CONTENT ---
+
+            const pages = {
+                dashboard: `
+                    <div class="dashboard-grid">
+                        <div class="card">
+                            <h3>Open Work Orders</h3>
+                            <p class="metric">12</p>
+                        </div>
+                        <div class="card">
+                            <h3>Assets Monitored</h3>
+                            <p class="metric">345</p>
+                        </div>
+                        <div class="card">
+                            <h3>Completed Tasks (This Month)</h3>
+                            <p class="metric">78</p>
+                        </div>
+                        <div class="card">
+                            <h3>Pending Maintenance</h3>
+                            <p class="metric">4</p>
+                        </div>
+                    </div>
+                `,
+                workOrders: `
+                    <div class="table-container">
+                        <div class="table-header">
+                            <h2>Work Orders</h2>
+                            <button class="btn-primary">Create New Order</button>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Task</th>
+                                    <th>Assigned To</th>
+                                    <th>Status</th>
+                                    <th>Due Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="work-orders-table">
+                                </tbody>
+                        </table>
+                    </div>
+                `
+            };
+            
+            // --- DATA (Mock data, would come from a server in a real app) ---
+            
+            const workOrderData = [
+                { id: 'WO-001', task: 'Fix flickering lights in office A', assignedTo: 'John Doe', status: 'In Progress', dueDate: '2025-06-15' },
+                { id: 'WO-002', task: 'Repair leaking faucet in kitchen', assignedTo: 'Jane Smith', status: 'Completed', dueDate: '2025-06-12' },
+                { id: 'WO-003', task: 'HVAC unit inspection', assignedTo: 'John Doe', status: 'New', dueDate: '2025-06-20' },
+                { id: 'WO-004', task: 'Replace broken window in lobby', assignedTo: 'Mike Johnson', status: 'New', dueDate: '2025-06-18' },
+                { id: 'WO-005', task: 'Monthly fire extinguisher check', assignedTo: 'Jane Smith', status: 'Completed', dueDate: '2025-06-10' },
+            ];
+
+            // --- FUNCTIONS ---
+            
+            function renderWorkOrders() {
+                const tableBody = document.getElementById('work-orders-table');
+                if (!tableBody) return; // Exit if the table isn't on the current page
+                
+                tableBody.innerHTML = ''; // Clear existing rows
+                workOrderData.forEach(order => {
+                    // Create a status class (e.g., "in-progress")
+                    const statusClass = `status-${order.status.toLowerCase().replace(' ', '-')}`;
+                    
+                    const row = `
+                        <tr>
+                            <td>${order.id}</td>
+                            <td>${order.task}</td>
+                            <td>${order.assignedTo}</td>
+                            <td><span class="status ${statusClass}">${order.status}</span></td>
+                            <td>${order.dueDate}</td>
+                            <td class="action-buttons">
+                                <button>View</button>
+                                <button>Edit</button>
+                            </td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
+            }
+
+            function loadPage(pageName) {
+                // Update page title
+                pageTitle.textContent = pageName.charAt(0).toUpperCase() + pageName.slice(1).replace('-', ' ');
+
+                // Load HTML content
+                if (pageName === 'dashboard') {
+                    contentArea.innerHTML = pages.dashboard;
+                } else if (pageName === 'work-orders') {
+                    contentArea.innerHTML = pages.workOrders;
+                    // After loading the table structure, populate it with data
+                    renderWorkOrders();
+                }
+
+                // Update active link
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.id === `nav-${pageName.replace(' ', '-')}`) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+
+            // --- EVENT LISTENERS ---
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    // Get page name from link ID (e.g., "nav-dashboard" -> "dashboard")
+                    const pageName = e.target.id.split('-')[1];
+                    loadPage(pageName);
+                });
+            });
+
+            // --- INITIAL PAGE LOAD ---
+            loadPage('dashboard');
+        });
+    </script>
+
+</body>
+</html>
+
